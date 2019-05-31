@@ -1,0 +1,16 @@
+{
+	"name": "Habit Breaker",
+	"version": "0.1",
+	"icons": {
+		"16": "images/icon16.png",
+		"96": "images/icon96.png",
+		"128": "images/icon128.png"
+	},
+	"description": "This extension serves to remind you not to visit sites you've listed. If and when there's a need to break the rules, it gives a way to meter and track exceptions.",
+	"default_locale": "en",
+	"author": "Dan Covill",
+	"permissions": [
+		"Storage"
+	],
+	"manifest_version": 2
+}
