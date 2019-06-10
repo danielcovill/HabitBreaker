@@ -1,0 +1,10 @@
+#message {
+    margin: 0 auto;
+    border: 1px solid black;
+    text-align: center;
+}
+#proceed {
+	margin: 10px auto;
+	display: block;
+	text-align: center;
+}

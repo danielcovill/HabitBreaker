@@ -10,7 +10,18 @@
 	"default_locale": "en",
 	"author": "Dan Covill",
 	"permissions": [
-		"Storage"
+		"webRequest",
+		"webRequestBlocking",
+		"<all_urls>",
+		"storage"
 	],
+	"web_accessible_resources": [
+		"app/index.html",
+		"app/app.js",
+		"app/app.css"
+	],
+	"background": {
+		"scripts": ["app/background.js"]
+	},
 	"manifest_version": 2
 }
