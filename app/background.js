@@ -6,6 +6,8 @@ window.browser = (function () {
 		window.chrome;
 })();
 
+// Check a request for a new page and if the redirect is not allowed
+// redirect the user to the "are you sure" page.
 function checkURL(requestDetails) {
 	redirectingFrom = requestDetails.url;
 	if (!isRedirectAllowed(redirectingFrom)) {

@@ -18,7 +18,7 @@ document.getElementById("redirectForm").addEventListener("submit", function (e) 
 	let reason = e.srcElement.reason.value;
 	let timeout = e.srcElement.timeout.value;
 	
-	//TODO: log the reason, set the timeout
+	//TODO: log the reason, set the timeout, call for a redirect from background.js
 	debugger;
 });
 
