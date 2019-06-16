@@ -17,7 +17,7 @@
 		"storage"
 	],
 	"options_ui": {
-    "page": "options.html"
+    "page": "app/options.html"
 	},
 	"browser_action": {
 		"default_icon": {
