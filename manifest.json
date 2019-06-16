@@ -15,6 +15,17 @@
 		"<all_urls>",
 		"storage"
 	],
+	"options_ui": {
+    "page": "options.html"
+	},
+	"browser_action": {
+		"default_icon": {
+			"16": "images/icon-16.png",
+			"32": "images/icon-32.png"
+		},
+		"default_title": "Habit Breaker",
+		"default_popup": "app/popup.html"
+	},
 	"web_accessible_resources": [
 		"app/index.html",
 		"app/app.js",

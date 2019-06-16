@@ -8,8 +8,23 @@
 </head>
 
 <body class="primaryColor">
-	<div id="message">You're attempting to visit a page on <span id="redirectingFrom"></span></div>
-	<a id="proceed" href="#continue">Continue</a>
+	<form id="redirectForm">
+		<div id="message">
+			You're attempting to visit a page on <span id="redirectingFrom"></span>
+			Hopefully you've got a good reason!
+		</div>
+		<div id="createException">
+			To make an exception, put in your reason and the number of minutes allowed. Otherwise <a id="goBack" href="#goback">Go Back</a>.
+			<br />
+			<label for="reason">Reason</label>
+			<textarea id="reason" name="reason" rows="3" required></textarea>
+
+			<br />
+			<label for="timeout">Minutes to browse</label>
+			<input id="timeout" name="timeout" type="number" required />
+			<input type="submit" id="proceed" value="Proceed" />
+		</div>
+	</form>
 </body>
 
 </html>
