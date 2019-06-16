@@ -3,6 +3,7 @@
 	"version": "0.1",
 	"icons": {
 		"16": "images/icon16.png",
+		"48": "images/icon-48.png",
 		"64": "images/icon64.png",
 		"128": "images/icon128.png"
 	},
@@ -21,7 +22,10 @@
 	"browser_action": {
 		"default_icon": {
 			"16": "images/icon-16.png",
-			"32": "images/icon-32.png"
+			"32": "images/icon-32.png",
+			"48": "images/icon-48.png",
+			"64": "images/icon64.png",
+			"128": "images/icon128.png"
 		},
 		"default_title": "Habit Breaker",
 		"default_popup": "app/popup.html"
