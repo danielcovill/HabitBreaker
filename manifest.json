@@ -4,9 +4,6 @@
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "{7e366839-2b7f-4235-bf7c-367450c69285}"
-		},
-		"edge": {
-			"browser_action_next_to_addressbar": true
 		}
 	},
 	"icons": {

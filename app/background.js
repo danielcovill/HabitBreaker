@@ -1,8 +1,7 @@
 let redirectingFrom = "";
 
 window.browser = (function () {
-	return window.msBrowser ||
-		window.browser ||
+	return window.browser ||
 		window.chrome;
 })();
 
@@ -48,7 +47,7 @@ function overrideRedirect(tabId, redirectUrl, reason, duration) {
 }
 
 function isRedirectAllowed(url) {
-	console.log("Bad code here - needs to be fixed");
+	console.log("Not yet implemented");
 	// get the "banned" list from storage
 	// ignore any items that are currently excepted due to a timeout
 	// is not allowed if the item is a regex match for any remaining item

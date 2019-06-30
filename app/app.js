@@ -1,7 +1,6 @@
 window.browser = (function () {
-  return window.msBrowser ||
-    window.browser ||
-    window.chrome;
+	return window.browser ||
+		window.chrome;
 })();
 
 // Clicking the proceed button asks the background process to keep going

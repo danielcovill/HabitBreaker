@@ -1,7 +1,6 @@
 window.browser = (function () {
-  return window.msBrowser ||
-    window.browser ||
-    window.chrome;
+	return window.browser ||
+		window.chrome;
 })();
 
 document.addEventListener("DOMContentLoaded", function () {
