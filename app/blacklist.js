@@ -3,8 +3,8 @@ class BlacklistManager {
 	//	domainUrl: string
 	// 
 	// Blacklist objects include the following fields:
-	//  exceptionTime: local datetime of current exception expiration
-	//  exceptionReason: reason for current exception
+	//	exceptionTime: local datetime of current exception expiration
+	//	exceptionReason: reason for current exception
 	// 
 	// Notes:
 	// I had to throw special "chrome" cases in here because google doesn't 
@@ -34,7 +34,7 @@ class BlacklistManager {
 	// domainUrl: The domain for the exception, only a domain root will be valid
 	// 
 	// Returns
-	// Promise - resolved once domain is added
+	// Promise - resolved once domain is added, rejected if error or item already exists
 	addEntry(domainUrl) {
 		let newBlacklistEntry = { 
 			[domainUrl]: {
@@ -43,15 +43,27 @@ class BlacklistManager {
 			}
 		}
 		if(!!window.chrome) {
-			chrome.storage.sync.set(newBlacklistEntry, () => {
-				if(!!chrome.runtime.lastError) {
-					return Promise.reject(chrome.runtime.lastError);
+			chrome.storage.sync.get(domainUrl, (result) => {
+				if(Object.keys(result).length > 0) {
+					return Promise.reject("Sync item already exists");
 				} else {
-					return Promise.resolve();
+					chrome.storage.sync.set(newBlacklistEntry, () => {
+						if(!!chrome.runtime.lastError) {
+							return Promise.reject(chrome.runtime.lastError);
+						} else {
+							return Promise.resolve();
+						}
+					});
 				}
 			});
 		} else {
-			return browser.storage.sync.set(newBlacklistEntry);
+			browser.storage.sync.get(domainUrl).then((reuslt) => {
+				if(Object.keys(result).length > 0) {
+					return Promise.reject("Sync item already exists");
+				} else {
+					return browser.storage.sync.set(newBlacklistEntry);
+				}
+			})
 		}
 	}
 
@@ -87,7 +99,17 @@ class BlacklistManager {
 	// Returns
 	// Promise - rejected if the domainUrl doesn't exist or invalid parameter used
 	createTempoararyException(domainUrl, reason, minutes) {
-		throw "Not Implemented";
+		if(!!window.chrome) {
+			chrome.storage.sync.get(domainUrl, (result) => {
+				if(Object.keys(result).length === 0) {
+					//TODO: add the item to our list
+				} else {
+					return Promise.reject("No such domain");
+				}
+			});
+		} else {
+		}
+		throw("Not implemented");
 	}
 }
 export { }
