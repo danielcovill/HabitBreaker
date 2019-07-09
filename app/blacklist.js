@@ -1,27 +1,55 @@
+import { filter } from "minimatch";
+
 class BlacklistManager {
-	// Blacklist objects are defined by
-	//	domainUrl: string
+	// Blacklist objects are defined by their domainUrl as the key
 	// 
 	// Blacklist objects include the following fields:
-	//	exceptionTime: local datetime of current exception expiration
+	//	exceptionTime: local datetime of current exception expiration (UTC/Unix)
 	//	exceptionReason: reason for current exception
 	// 
 	// Notes:
 	// I had to throw special "chrome" cases in here because google doesn't 
 	// return promises from sync calls natively
+	//
+	// User settings must all be prefixed with ":" since I'm using the domains
+	// as keys in storage. This is how I'm filtering for getAllEntries
 
 	constructor() {
+	}
+
+	// Get all blacklist items
+	//
+	// Returns
+	// Promise - resolves to an array of blacklist items
+	static getAllEntries() {
+		if (!!window.chrome) {
+			chrome.storage.sync.get(null, (result) => {
+				if (!!chrome.runtime.lastError) {
+					return Promise.reject(chrome.runtime.lastError);
+				} else {
+					return Promise.resolve(result.filter(this.filterSettingsToBlacklist));
+				}
+			});
+		} else {
+			browser.storage.sync.get().then((result) => {
+				return Promise.resolve(result.filter(this.filterSettingsToBlacklist));
+			});
+		}
 	}
 
 	// Get a blacklist item by the domain name
 	//
 	// Returns
-	// Promise - resolves to a blacklist item based on the URL, result null 
+	// Promise - resolves to a blacklist item based on the URL, result is null 
 	// if the URL isn't in the blacklist
-	getEntry(domainUrl) {
-		if(!!window.chrome) {
+	static getEntry(domainUrl) {
+		if (!!window.chrome) {
 			chrome.storage.sync.get(domainUrl, (result) => {
-				return Promise.resolve(result);
+				if (!!chrome.runtime.lastError) {
+					return Promise.reject(chrome.runtime.lastError);
+				} else {
+					return Promise.resolve(result);
+				}
 			});
 		} else {
 			return browser.storage.sync.get(domainUrl);
@@ -35,20 +63,20 @@ class BlacklistManager {
 	// 
 	// Returns
 	// Promise - resolved once domain is added, rejected if error or item already exists
-	addEntry(domainUrl) {
-		let newBlacklistEntry = { 
+	static createEntry(domainUrl) {
+		let newBlacklistEntry = {
 			[domainUrl]: {
-				exceptionTime: null,
+				exceptionEnd: null,
 				exceptionReason: null
 			}
 		}
-		if(!!window.chrome) {
+		if (!!window.chrome) {
 			chrome.storage.sync.get(domainUrl, (result) => {
-				if(Object.keys(result).length > 0) {
-					return Promise.reject("Sync item already exists");
+				if (Object.keys(result).length > 0) {
+					return Promise.reject("Domain exception already exists");
 				} else {
 					chrome.storage.sync.set(newBlacklistEntry, () => {
-						if(!!chrome.runtime.lastError) {
+						if (!!chrome.runtime.lastError) {
 							return Promise.reject(chrome.runtime.lastError);
 						} else {
 							return Promise.resolve();
@@ -57,9 +85,9 @@ class BlacklistManager {
 				}
 			});
 		} else {
-			browser.storage.sync.get(domainUrl).then((reuslt) => {
-				if(Object.keys(result).length > 0) {
-					return Promise.reject("Sync item already exists");
+			browser.storage.sync.get(domainUrl).then((result) => {
+				if (Object.keys(result).length > 0) {
+					return Promise.reject("Domain exception already exists");
 				} else {
 					return browser.storage.sync.set(newBlacklistEntry);
 				}
@@ -75,10 +103,10 @@ class BlacklistManager {
 	// 
 	// Returns
 	// Promise - resolved upon successful removal or no matching item
-	removeEntry(domainUrl) {
-		if(!!window.chrome) {
+	static removeEntry(domainUrl) {
+		if (!!window.chrome) {
 			chrome.storage.sync.remove(domainUrl, () => {
-				if(!!chrome.runtime.lastError) {
+				if (!!chrome.runtime.lastError) {
 					return Promise.reject(chrome.runtime.lastError);
 				} else {
 					return Promise.resolve();
@@ -98,18 +126,35 @@ class BlacklistManager {
 	// 
 	// Returns
 	// Promise - rejected if the domainUrl doesn't exist or invalid parameter used
-	createTempoararyException(domainUrl, reason, minutes) {
-		if(!!window.chrome) {
+	static createTempoararyException(domainUrl, reason, minutes) {
+		if (!!window.chrome) {
 			chrome.storage.sync.get(domainUrl, (result) => {
-				if(Object.keys(result).length === 0) {
-					//TODO: add the item to our list
+				if (Object.keys(result).length === 0) {
+					return Promise.reject("Domain exception does not exist");
 				} else {
-					return Promise.reject("No such domain");
+					let exceptionEnd = Date.now() + 60000 * minutes;
+					chrome.storage.sync.set({ [domainUrl]: { "timeout": exceptionEnd, "reason": exceptionReason } }, function () {
+						if (!!chrome.runtime.lastError) {
+							return Promise.reject(chrome.runtime.lastError);
+						} else {
+							return Promise.resolve();
+						}
+					});
 				}
 			});
 		} else {
+			browser.storage.sync.get(domainUrl).then((result) => {
+				if (Object.keys(result).length > 0) {
+					return Promise.reject("Domain exception does not exist");
+				} else {
+					return browser.storage.sync.set({ [domainUrl]: { "timeout": exceptionEnd, "reason": exceptionReason } });
+				}
+			});
 		}
-		throw("Not implemented");
+	}
+
+	static filterSettingsToBlacklist(settingEntry) {
+		return !Object.keys(settingEntry)[0].startsWith(":");
 	}
 }
-export { }
+export { getAllEntries, getEntry, createEntry, removeEntry, createTempoararyException }
