@@ -41,7 +41,11 @@
 		"app/app.css"
 	],
 	"background": {
-		"scripts": ["app/background.js"]
+		"scripts": [
+			"app/background.js",
+			"app/Blacklist.js",
+			"app/BlacklistEntry.js"
+		]
 	},
 	"manifest_version": 2
 }

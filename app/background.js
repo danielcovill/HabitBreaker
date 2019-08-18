@@ -1,14 +1,11 @@
 let redirectingFrom = "";
 
-window.browser = (function () {
-	return window.browser ||
-		window.chrome;
-})();
-
 // Check a request for a new page and if the redirect is not allowed
 // redirect the user to the "are you sure" page.
 function checkURL(requestDetails) {
 	redirectingFrom = requestDetails.url;
+	let blacklist = new Blacklist();
+	debugger;
 	if (!isRedirectAllowed(redirectingFrom)) {
 		return { redirectUrl: browser.extension.getURL("app/index.html") };
 	}
@@ -39,7 +36,7 @@ browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 function overrideRedirect(tabId, redirectUrl, reason, duration) {
 	let hostUrl = new URL(redirectUrl).hostname;
 	return browser.storage.sync.set({allowedDomains: hostUrl})
-		.then(resolve => {
+		.then((resolve) => {
 			browser.tabs.update(tabId, { redirectUrl });
 		}, reject => {
 			throw "Error setting allow url: " + reject;
@@ -54,10 +51,6 @@ function isRedirectAllowed(url) {
 	// else is allowed
 
 	//temp code until I can implement something real
-	let tempCodeRegex = new RegExp(".*reddit.com.*");
-	if(url.match(tempCodeRegex)) {
-		return false;
-	}
 
 	return true;
 }

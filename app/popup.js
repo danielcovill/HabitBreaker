@@ -1,7 +1,3 @@
-window.browser = (function () {
-	return window.browser ||
-		window.chrome;
-})();
 
 document.addEventListener("DOMContentLoaded", function () {
 	//get the current tab's page

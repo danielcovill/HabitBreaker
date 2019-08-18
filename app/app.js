@@ -1,8 +1,3 @@
-window.browser = (function () {
-	return window.browser ||
-		window.chrome;
-})();
-
 // Clicking the proceed button asks the background process to keep going
 document.getElementById("proceed").addEventListener("click", function() {
 	let timeout = document.getElementById("timeout").value;
