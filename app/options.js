@@ -47,7 +47,7 @@ function addBlacklistEntryToPage(url, blackList) {
 		});
 	});
 
-	//hook it all up
+	//hook it all up 
 	listEntry.appendChild(description);
 	listEntry.appendChild(removeAnchor);
 	document.getElementById("blacklistContainer").appendChild(listEntry);
