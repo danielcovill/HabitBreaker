@@ -5,6 +5,8 @@
 <head>
 	<link href="options.css" rel="stylesheet">
 	<script src="options.js" defer></script>
+	<script src="BlackList.js" defer></script>
+	<script src="BlackListEntry.js" defer></script>
 </head>
 
 <body>
@@ -21,13 +23,13 @@
 	</div>
 
 	<div id="settings">
-		<div>Add or remove sites from the blacklist below</div>
+		<div>Add or remove sites from the blacklist below:</div>
 		<div id="addSiteContainer">
-			<input type="url"><a href="#">Add</a>
+			<input id="newEntry" type="url"><a id="addEntry" href="#">Add</a>
 		</div>
-		<div id="blacklistContainer">
+		<ul id="blacklistContainer">
 
-		</div>
+		</ul>
 	</div>
 
 	<div id="links">

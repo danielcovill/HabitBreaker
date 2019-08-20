@@ -5,7 +5,6 @@ let redirectingFrom = "";
 function checkURL(requestDetails) {
 	redirectingFrom = requestDetails.url;
 	let blacklist = new Blacklist();
-	debugger;
 	if (!isRedirectAllowed(redirectingFrom)) {
 		return { redirectUrl: browser.extension.getURL("app/index.html") };
 	}

@@ -56,7 +56,7 @@ class Blacklist {
 
 	addEntry(url) {
 		let newEntry = new BlacklistEntry(url);
-		this.getBlacklist().then((bl) => {
+		return this.getBlacklist().then((bl) => {
 			if (bl.filter((entry) => (entry.url === url)).length > 0) {
 				throw `Entry with URL ${url} already exists`;
 			} else {
