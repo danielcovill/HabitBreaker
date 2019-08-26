@@ -42,9 +42,9 @@
 	],
 	"background": {
 		"scripts": [
-			"app/background.js",
+			"app/BlacklistEntry.js",
 			"app/Blacklist.js",
-			"app/BlacklistEntry.js"
+			"app/background.js"
 		]
 	},
 	"manifest_version": 2

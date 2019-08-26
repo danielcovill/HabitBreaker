@@ -1,16 +1,21 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-	let blackList = new Blacklist();
-	constructBlacklist(blackList);
-	configureAddButton(blackList);
+	browser.runtime.sendMessage({
+		type: "getBlacklistObject"
+	}).then((blackList) => {
+		constructBlacklist(blackList);
+		configureAddButton(blackList);
+	});
 });
 
 function configureAddButton(blackList) {
 	document.getElementById("addEntry").addEventListener("click", () => {
 		let url = document.getElementById("newEntry").value;
-		blackList.addEntry(url).then(() => {//why is this coming back undefined when the remove doesn't?
+		blackList.addEntry(url).then(() => {
 			addBlacklistEntryToPage(url, blackList);
 			document.getElementById("newEntry").value = "";
+		}).catch((err) => {
+			console.log(err);
 		});
 	});
 }

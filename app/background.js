@@ -1,13 +1,17 @@
 let redirectingFrom = "";
+let blacklist = new Blacklist();
 
 // Check a request for a new page and if the redirect is not allowed
 // redirect the user to the "are you sure" page.
 function checkURL(requestDetails) {
-	redirectingFrom = requestDetails.url;
-	let blacklist = new Blacklist();
-	if (!isRedirectAllowed(redirectingFrom)) {
-		return { redirectUrl: browser.extension.getURL("app/index.html") };
-	}
+	//need to figure out how to de-promise this so it works
+	blacklist.isCurrentlyBlacklisted(requestDetails.url).then((isBlacklisted) => {
+		if(isBlacklisted) {
+			return { redirectUrl: browser.extension.getURL("app/index.html") };
+		} else {
+
+		}
+	})
 }
 
 browser.webRequest.onBeforeRequest.addListener(
@@ -16,8 +20,10 @@ browser.webRequest.onBeforeRequest.addListener(
 	["blocking"]
 );
 
-browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+browser.runtime.onMessage.addListener(function (request, sender) {
 	switch (request.type) {
+		case "getBlacklistObject":
+			return Promise.resolve(blacklist);
 		case "getRedirectingFrom":
 			return Promise.resolve(redirectingFrom);
 		case "triggerRedirect":
@@ -40,16 +46,4 @@ function overrideRedirect(tabId, redirectUrl, reason, duration) {
 		}, reject => {
 			throw "Error setting allow url: " + reject;
 		});
-}
-
-function isRedirectAllowed(url) {
-	console.log("Not yet implemented");
-	// get the "banned" list from storage
-	// ignore any items that are currently excepted due to a timeout
-	// is not allowed if the item is a regex match for any remaining item
-	// else is allowed
-
-	//temp code until I can implement something real
-
-	return true;
 }

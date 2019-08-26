@@ -54,7 +54,17 @@ class Blacklist {
 		}
 	}
 
+	/*
+	* URL should come in as a pure domain with wildcards. The only valid charcaters 
+	* are letters, numbers, hyphens, periods, and astrisks representing wildcards. 
+	* The end of the URL is assumed to be a slash followed by a wildcard as well, 
+	* though neithr should be explicitly represented. The protocol should be omitted.
+	*/
 	addEntry(url) {
+		if(RegExp("[^a-zA-Z0-9-\.\*]+").test(url)) {
+			return Promise.reject(`Invalid URL in entry ${url}`);
+		}
+
 		let newEntry = new BlacklistEntry(url);
 		return this.getBlacklist().then((bl) => {
 			if (bl.filter((entry) => (entry.url === url)).length > 0) {
@@ -91,7 +101,15 @@ class Blacklist {
 		throw "Not Implemented";
 	}
 
-	isBlacklisted(url) {
-		throw "Not Implemented";
+	isCurrentlyBlacklisted(url) {
+		return this.getBlacklist().then((bl) => {
+			for (const blacklistEntry of bl) {
+				let regex = RegExp(blacklistEntry.url.replace(".","\\.").replace("*",".*") + "/.*");
+				if(regex.test(url) && !blacklistEntry.isExcepted) {
+					return true;
+				}
+			};
+			return false;
+		});
 	}
 }
