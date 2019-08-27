@@ -1,11 +1,8 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-	browser.runtime.sendMessage({
-		type: "getBlacklistObject"
-	}).then((blackList) => {
-		constructBlacklist(blackList);
-		configureAddButton(blackList);
-	});
+	let blackList = new Blacklist();
+	constructBlacklist(blackList);
+	configureAddButton(blackList);
 });
 
 function configureAddButton(blackList) {

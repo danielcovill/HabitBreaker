@@ -4,14 +4,21 @@ let blacklist = new Blacklist();
 // Check a request for a new page and if the redirect is not allowed
 // redirect the user to the "are you sure" page.
 function checkURL(requestDetails) {
-	//need to figure out how to de-promise this so it works
-	blacklist.isCurrentlyBlacklisted(requestDetails.url).then((isBlacklisted) => {
-		if(isBlacklisted) {
+	let url = new URL(requestDetails.url).hostname;
+	if (!!window.browser) {
+		return blacklist.isCurrentlyBlacklisted(url).then((isBlacklisted) => {
+			if (isBlacklisted) {
+				return { redirectUrl: browser.extension.getURL("app/index.html") };
+			}
+		});
+	} else if (!!window.chrome) {
+		//can't use promises here because chrome's webRequest.onBeforeRequest can't handle them
+		if(blacklist.isCurrentlyBlacklisted(url)) {
 			return { redirectUrl: browser.extension.getURL("app/index.html") };
-		} else {
-
 		}
-	})
+	} else {
+		throw "Unsupported browser";
+	}
 }
 
 browser.webRequest.onBeforeRequest.addListener(
@@ -22,15 +29,13 @@ browser.webRequest.onBeforeRequest.addListener(
 
 browser.runtime.onMessage.addListener(function (request, sender) {
 	switch (request.type) {
-		case "getBlacklistObject":
-			return Promise.resolve(blacklist);
 		case "getRedirectingFrom":
 			return Promise.resolve(redirectingFrom);
 		case "triggerRedirect":
 			return overrideRedirect(sender.tab.id, redirectingFrom)
 				.then(resolve => {
 
-				},reject => {
+				}, reject => {
 
 				});
 		default:
@@ -40,7 +45,7 @@ browser.runtime.onMessage.addListener(function (request, sender) {
 
 function overrideRedirect(tabId, redirectUrl, reason, duration) {
 	let hostUrl = new URL(redirectUrl).hostname;
-	return browser.storage.sync.set({allowedDomains: hostUrl})
+	return browser.storage.sync.set({ allowedDomains: hostUrl })
 		.then((resolve) => {
 			browser.tabs.update(tabId, { redirectUrl });
 		}, reject => {
