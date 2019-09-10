@@ -1,25 +1,29 @@
-// Clicking the proceed button asks the background process to keep going
-document.getElementById("proceed").addEventListener("click", function() {
-	let timeout = document.getElementById("timeout").value;
-	browser.runtime.sendMessage({
-		type: "triggerRedirect",
-		timeoutMins: timeout
-	});
-});
+let destination = null;
 
 document.getElementById("redirectForm").addEventListener("submit", function (e) {
 	e.preventDefault();
 	let reason = e.srcElement.reason.value;
 	let timeout = e.srcElement.timeout.value;
-	
-	//TODO: log the reason, set the timeout, call for a redirect from background.js
-	debugger;
+
+	//validation
+	if(timeout <= 0) {
+		throw "Invalid timeout";
+	}
+
+	//Log the reason with the timeout and move on
+	browser.runtime.sendMessage({
+		type: "createRedirectException",
+		url: destination,
+		timeoutMins: timeout,
+		exceptionReason: reason
+	}).then(() => {
+		document.location = destination;
+	}).catch((reason) => {
+		console.error(reason);
+	});
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-	browser.runtime.sendMessage({
-		type: "getRedirectingFrom"
-	}).then(function (redirectingFrom) {
-		document.getElementById("redirectingFrom").innerHTML = new URL(redirectingFrom).hostname;
-	});
+document.addEventListener("DOMContentLoaded", () => {
+	destination = new URL(window.location.href).searchParams.get("redirect");
+	document.getElementById("redirectingFrom").innerHTML = new URL(destination).hostname;
 });

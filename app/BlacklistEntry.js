@@ -1,42 +1,60 @@
 class BlacklistEntry {
 
 	//number of times this blacklist item has been excepted
-	get exceptionCount() {
-		return this.reasons.length - 1;
+	static exceptionCount(item) {
+		if(!item || typeof item.reasons === "undefined") {
+			throw "BlacklistEntry: Invalid item";
+		}
+		return item.reasons.length - 1;
 	}
 
 	//whether or not the current blacklist item is excepted
-	get isExcepted() {
-		if(!!this.exceptionTimeout) {
-			return this.exceptionTimeout > Date.now();
+	static isExcepted(item) {
+		if(!item || typeof item.exceptionTimeout === "undefined") {
+			throw "BlacklistEntry: Invalid item";
+		}
+		if(!!item.exceptionTimeout) {
+			return item.exceptionTimeout > Date.now();
 		} else {
 			return false;
 		}
 	}
 
 	//current reason (or null if none) 
-	get currentExceptionReason() {
-		if(this.reasons.length > 0) {
-			return reasons[this.reasons.length - 1].reason;
+	static currentExceptionReason(item) {
+		if(!item || typeof item.reasons === "undefined") {
+			throw "BlacklistEntry: Invalid item";
+		}
+		if(item.reasons.length > 0) {
+			return reasons[item.reasons.length - 1].reason;
 		} else {
 			return null;
 		}
 	}
 
-	constructor(_url) {
+	static createEntry(_url) {
 		if(!_url) {
-			throw "Parameter missing: URL";
+			throw "BlacklistEntry: Parameter missing";
 		}
-		this.url = _url;
-		this.exceptionTimeout = null;
-		this.reasons = [];
+		let result = {};
+		result.url = _url;
+		result.exceptionTimeout = null;
+		result.reasons = [];
+		return result;
 	}
 
-	createException(seconds, reason) {
-		this.reasons.push({
+	static createException(item, seconds, reason) {
+		if(!item || typeof item.reasons === "undefined") {
+			throw "BlacklistEntry: Invalid item";
+		}
+		if(!seconds || !reason) {
+			throw "BlacklistEntry: Invalid parameter";
+		}
+		item.reasons.push({
 			reason: reason, 
 			duration: seconds,
 			created: Date.now()
 		});
 	}
 }
+//export ????
