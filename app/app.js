@@ -1,6 +1,6 @@
 let destination = null;
 
-document.getElementById("redirectForm").addEventListener("submit", function (e) {
+document.getElementById("redirectForm").addEventListener("submit", (e) => {
 	e.preventDefault();
 	let reason = e.srcElement.reason.value;
 	let timeout = e.srcElement.timeout.value;
@@ -26,4 +26,9 @@ document.getElementById("redirectForm").addEventListener("submit", function (e) 
 document.addEventListener("DOMContentLoaded", () => {
 	destination = new URL(window.location.href).searchParams.get("redirect");
 	document.getElementById("redirectingFrom").innerHTML = new URL(destination).hostname;
+});
+
+document.getElementById("goBack").addEventListener("click", (e) => {
+	e.preventDefault();
+	history.back();
 });

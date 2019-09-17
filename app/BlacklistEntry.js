@@ -50,6 +50,7 @@ class BlacklistEntry {
 		if(!seconds || !reason) {
 			throw "BlacklistEntry: Invalid parameter";
 		}
+		item.exceptionTimeout = new Date(Date.now() + (seconds * 1000));
 		item.reasons.push({
 			reason: reason, 
 			duration: seconds,
@@ -57,4 +58,3 @@ class BlacklistEntry {
 		});
 	}
 }
-//export ????

@@ -1,5 +1,3 @@
-import * as BlacklistEntry from "./BlacklistEntry.js";
-
 class Blacklist {
 	constructor() { }
 
@@ -76,6 +74,7 @@ class Blacklist {
 						return bl[i];
 					}
 				}
+				return null;
 			});
 		} else if (!!window.chrome) {
 			return new Promise((resolve) => {
@@ -86,7 +85,7 @@ class Blacklist {
 						resolve(bl[i]);
 					}
 				}
-				resolve();
+				resolve(null);
 			});
 		} else {
 			throw "Unsupported browser";
@@ -183,6 +182,7 @@ class Blacklist {
 				for (let i = 0; i < bl.length && !itemFound; i++) {
 					if (bl[i].url === url) {
 						BlacklistEntry.createException(bl[i], seconds, reason);
+						itemFound = true;
 					}
 				}
 				if (!itemFound) {
@@ -199,6 +199,7 @@ class Blacklist {
 			for (let i = 0; i < bl.length && !itemFound; i++) {
 				if (bl[i].url === url) {
 					BlacklistEntry.createException(bl[i], seconds, reason);
+					itemFound = true;
 				}
 			}
 			if (!itemFound) {
