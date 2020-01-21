@@ -19,7 +19,8 @@
 		"webRequest",
 		"webRequestBlocking",
 		"<all_urls>",
-		"storage"
+		"storage",
+		"tabs"
 	],
 	"options_ui": {
     "page": "app/options.html"

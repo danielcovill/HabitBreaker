@@ -31,7 +31,7 @@ function copyUnmodifiedFiles(cb) {
 
 function zipResults(cb) {
         return src('build/**')
-          .pipe(zip('simple.zip'))
+          .pipe(zip('habit-breaker.zip'))
           .pipe(dest('./distribution'));
 }
 
